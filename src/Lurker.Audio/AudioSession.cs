@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using NAudio.CoreAudioApi;
 
 namespace Lurker.Audio;
@@ -11,6 +12,8 @@ public class AudioSession
     {
         _control = control;
     }
+
+    public Process Process { get; init; }
 
     public Bitmap Icon { get; init; }
 
