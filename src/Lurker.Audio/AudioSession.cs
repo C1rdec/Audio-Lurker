@@ -21,6 +21,6 @@ public class AudioSession
     public void SetVolume(float volume)
         => _control.SimpleAudioVolume.Volume = volume;
 
-    public float GetMasterPeakVolume()
+    public float GetMasterPeak()
         => _control.AudioMeterInformation.MasterPeakValue;
 }
