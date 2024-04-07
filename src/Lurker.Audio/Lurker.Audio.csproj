@@ -4,6 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Company>C1rdec</Company>
+	<Authors>C1rdec</Authors>
+	<PackageProjectUrl>https://github.com/C1rdec/AppDataFileManager</PackageProjectUrl>
+	<PackageIcon>Icon.jpg</PackageIcon>
+	<Version>8.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
