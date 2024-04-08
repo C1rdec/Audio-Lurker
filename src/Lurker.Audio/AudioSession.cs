@@ -22,9 +22,27 @@ public class AudioSession
     public int Volume 
     { 
         get => (int)(_control.SimpleAudioVolume.Volume * 100);
-        set => _control.SimpleAudioVolume.Volume = value / 100f;
+        set
+        {
+            _control.SimpleAudioVolume.Volume = ValidateVolume(value) / 100f;
+        }
     }
 
     public float GetMasterPeak()
         => _control.AudioMeterInformation.MasterPeakValue;
+
+    private static int ValidateVolume(int volume)
+    {
+        if (volume < 0)
+        {
+            return 0;
+        }
+
+        if (volume > 100)
+        {
+            return 100;
+        }
+
+        return volume;
+    }
 }
