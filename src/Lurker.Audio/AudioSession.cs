@@ -19,10 +19,11 @@ public class AudioSession
 
     public string Name { get; init; }
 
-    public float Volume { get; init; }
-
-    public void SetVolume(float volume)
-        => _control.SimpleAudioVolume.Volume = volume;
+    public int Volume 
+    { 
+        get => (int)(_control.SimpleAudioVolume.Volume * 100);
+        set => _control.SimpleAudioVolume.Volume = value / 100f;
+    }
 
     public float GetMasterPeak()
         => _control.AudioMeterInformation.MasterPeakValue;
