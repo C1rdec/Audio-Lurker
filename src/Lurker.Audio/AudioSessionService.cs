@@ -29,7 +29,7 @@ public class AudioSessionService
             audioSessions.Add(new AudioSession(session)
             { 
                 Process = processSession,
-                Name = string.IsNullOrEmpty(session.DisplayName) ? session.DisplayName : processSession.MainModule.FileVersionInfo.ProductName,
+                Name = string.IsNullOrEmpty(session.DisplayName) ? processSession.MainModule.FileVersionInfo.ProductName : session.DisplayName,
                 Icon = Icon.ExtractAssociatedIcon(processSession.MainModule.FileName).ToBitmap()
             });
         }
