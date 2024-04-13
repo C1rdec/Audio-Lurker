@@ -3,6 +3,7 @@ using NAudio.CoreAudioApi;
 using System.Diagnostics;
 using System.Drawing;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Lurker.Audio;
 
@@ -30,11 +31,26 @@ public class AudioSessionService
             { 
                 Id = session.GetSessionIdentifier,
                 Process = processSession,
-                Name = string.IsNullOrEmpty(session.DisplayName) ? processSession.MainModule.FileVersionInfo.ProductName : session.DisplayName,
+                Name = GetSessionName(session, processSession),
                 Icon = Icon.ExtractAssociatedIcon(processSession.MainModule.FileName).ToBitmap()
             });
         }
 
         return audioSessions;
+    }
+
+    private string GetSessionName(AudioSessionControl session, Process process)
+    {
+        if (string.IsNullOrEmpty(session.DisplayName))
+        {
+            if (string.IsNullOrEmpty(process.MainModule.FileVersionInfo.ProductName))
+            {
+                return Path.GetFileNameWithoutExtension(process.MainModule.FileName);
+            }
+
+            return process.MainModule.FileVersionInfo.ProductName;
+        }
+
+        return session.DisplayName;
     }
 }
