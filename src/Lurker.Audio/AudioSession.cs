@@ -13,6 +13,8 @@ public class AudioSession
         _control = control;
     }
 
+    public string Id { get; init; }
+
     public Process Process { get; init; }
 
     public Bitmap Icon { get; init; }
