@@ -9,7 +9,7 @@
 	<Authors>C1rdec</Authors>
 	<PackageProjectUrl>https://github.com/C1rdec/Audio-Lurker</PackageProjectUrl>
 	<PackageIcon>Icon.jpg</PackageIcon>
-	<Version>8.0.4</Version>
+	<Version>8.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>
