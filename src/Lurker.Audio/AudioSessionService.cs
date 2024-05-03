@@ -1,9 +1,12 @@
-﻿using NAudio.CoreAudioApi.Interfaces;
-using NAudio.CoreAudioApi;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using NAudio.CoreAudioApi;
+using NAudio.CoreAudioApi.Interfaces;
 
 namespace Lurker.Audio;
 
@@ -13,7 +16,6 @@ public class AudioSessionService
     {
         var deviceEnumerator = new MMDeviceEnumerator();
         var device = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-
         var sessions = device.AudioSessionManager.Sessions;
 
         var audioSessions = new List<AudioSession>();
@@ -32,7 +34,7 @@ public class AudioSessionService
                 Id = session.GetSessionIdentifier,
                 Process = processSession,
                 Name = GetSessionName(session, processSession),
-                Icon = Icon.ExtractAssociatedIcon(processSession.MainModule.FileName).ToBitmap()
+                Icon = Icon.ExtractAssociatedIcon(GetProcessFilename(processSession)).ToBitmap()
             });
         }
 
@@ -43,14 +45,54 @@ public class AudioSessionService
     {
         if (string.IsNullOrEmpty(session.DisplayName))
         {
-            if (string.IsNullOrEmpty(process.MainModule.FileVersionInfo.ProductName))
+            try
             {
-                return Path.GetFileNameWithoutExtension(process.MainModule.FileName);
+                if (string.IsNullOrEmpty(process.MainModule.FileVersionInfo.ProductName))
+                {
+                    return Path.GetFileNameWithoutExtension(process.MainModule.FileName);
+                }
+            }
+            catch
+            {
+                return process.ProcessName;
             }
 
             return process.MainModule.FileVersionInfo.ProductName;
         }
 
         return session.DisplayName;
+    }
+
+
+    [Flags]
+    private enum ProcessAccessFlags : uint
+    {
+        QueryLimitedInformation = 0x00001000
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool QueryFullProcessImageName(
+          [In] IntPtr hProcess,
+          [In] int dwFlags,
+          [Out] StringBuilder lpExeName,
+          ref int lpdwSize);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr OpenProcess(
+     ProcessAccessFlags processAccess,
+     bool bInheritHandle,
+     int processId);
+
+    string GetProcessFilename(Process p)
+    {
+        int capacity = 2000;
+        StringBuilder builder = new StringBuilder(capacity);
+        IntPtr ptr = OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.Id);
+        if (!QueryFullProcessImageName(ptr, 0, builder, ref capacity))
+        {
+            return String.Empty;
+        }
+
+        return builder.ToString();
     }
 }
